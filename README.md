@@ -55,3 +55,14 @@ git branch -D <local branch>
 To ensure we are not commiting broken code this project makes use of git hooks. Git hooks are scripts triggered during certain events in the git lifecycle. Husky is a popular package which allows us to set up and maintain these scripts. This project makes use a _pre-commit hook_. When we attempt to commit our work, the script defined in the `pre-commit` file will run. If any of our tests fail than the commit will be aborted.
 
 The [Husky documentation](https://typicode.github.io/husky/#/) explains how to configure Husky for your own project as well as creating your own custom hooks.\_
+
+## Environment Variables
+If you're planning on running this locally, you'll want to create 2 `.env` files. This will contain the `PGDATABASE` environment variable, which will be used to connect to the database. One will be called `.env.test` and will be used when testing with jest. It will contain the following:
+```
+PGDATABASE=nc_games_test
+```
+The other file will be called `.env.development` and will contain the following:
+```
+PGDATABASE=nc_games
+```
+These two files must be in the root of the project.
