@@ -27,14 +27,14 @@ describe('GET /api/categories', () => {
         return request(app)
         .get('/api/categories')
         .then((res) => {
-            expect(Array.isArray(res.body.result)).toBe(true);
+            expect(Array.isArray(res.body.categories)).toBe(true);
         })
     })
     test("returns correct response", () => {
         return request(app)
         .get('/api/categories')
         .then((res) => {
-            expect(res.body.result).toMatchObject(testData.categoryData);
+            expect(res.body.categories).toMatchObject(testData.categoryData);
         })
     })
 })
