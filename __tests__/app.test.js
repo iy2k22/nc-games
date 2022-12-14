@@ -9,6 +9,13 @@ describe('GET non-existent endpoint', () => {
         .get('/api/cagetories')
         .expect(404);
     });
+    test("returns error message", () => {
+        return request(app)
+        .get('/api/test')
+        .then((res) => {
+            expect(res.body).toEqual({ msg: "error: invalid path" });
+        })
+    })
 })
 describe('GET /api/categories', () => {
     test("returns status code 200", () => {
@@ -20,14 +27,14 @@ describe('GET /api/categories', () => {
         return request(app)
         .get('/api/categories')
         .then((res) => {
-            expect(Array.isArray(res.body)).toBe(true);
+            expect(Array.isArray(res.body.result)).toBe(true);
         })
     })
     test("returns correct response", () => {
         return request(app)
         .get('/api/categories')
         .then((res) => {
-            expect(res.body).toEqual(testData.categoryData);
+            expect(res.body.result).toMatchObject(testData.categoryData);
         })
     })
 })

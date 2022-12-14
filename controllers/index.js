@@ -4,7 +4,7 @@ const {
 
 const getCategories = (req, res) => {
     return readCategories().then((result) => {
-        res.status(200).send(result);
+        res.status(200).send({ result: result });
     });
 }
 

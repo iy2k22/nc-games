@@ -4,10 +4,10 @@ const {
     getCategories
 } = require('./controllers');
 const {
-    handleUserErrors
+    handle404Errors
 } = require('./errors');
 
-app.use(handleUserErrors);
 app.get('/api/categories', getCategories);
+app.all('*', handle404Errors);
 
 module.exports = app;

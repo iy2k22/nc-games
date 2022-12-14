@@ -1,7 +1,7 @@
-const handleUserErrors = (err, req, res, next) => {
-    if (err) console.log(err);
+const handle404Errors = (req, res) => {
+    res.status(404).send({ msg: "error: invalid path" });
 }
 
 module.exports = {
-    handleUserErrors
+    handle404Errors
 }
