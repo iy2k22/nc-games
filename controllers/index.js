@@ -1,6 +1,7 @@
 const {
     readCategories,
-    readReviews
+    readReviews,
+    readReviewById
 } = require('../models');
 
 const getCategories = (req, res, next) => {
@@ -24,7 +25,18 @@ const getReviews = (req, res, next) => {
     })
 }
 
+const getReviewById = (req, res, next) => {
+    const id = req.params.review_id;
+    readReviewById(id).then((review) => {
+        res.status(200).send({ review: review });
+    }).catch((err) => {
+        console.log(err);
+        next(err);
+    })
+}
+
 module.exports = {
     getCategories,
-    getReviews
+    getReviews,
+    getReviewById
 };
