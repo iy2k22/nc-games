@@ -17,8 +17,13 @@ const readReviewById = (id) => {
   .then((result) => result.rows[0] || Promise.reject({ status: 404, msg: "error: review id not found" }));
 }
 
+const readCommentsFromReview = (id) => {
+  return db.query(`SELECT * FROM comments WHERE comments.review_id = $1;`, [id])
+  .then((result) => result.rows.length ? result.rows : Promise.reject({ status: 404, msg: `error: no comments found for id ${id}` }));
+}
 module.exports = {
   readCategories,
   readReviews,
-  readReviewById
+  readReviewById,
+  readCommentsFromReview
 };

@@ -161,3 +161,50 @@ describe("GET /api/reviews/:review_id", () => {
     })
   })
 })
+
+describe.only("GET /api/reviews/:review_id/comments", () => {
+  test("returns status code 200", () => {
+    return request(app)
+    .get('/api/reviews/2/comments')
+    .expect(200);
+  })
+  test("responds with an object with a key of comments containing an array", () => {
+    return request(app)
+    .get('/api/reviews/2/comments')
+    .then(({ body }) => {
+      expect(body.comments).toBeInstanceOf(Array);
+    })
+  });
+  test("array from response contains comments with appropriate properties", () => {
+    return request(app)
+    .get('/api/reviews/2/comments')
+    .then(({ body }) => {
+      body.comments.forEach((comment) => {
+        expect(comment).toMatchObject({
+          comment_id: expect.any(Number),
+          body: expect.any(String),
+          votes: expect.any(Number),
+          author: expect.any(String),
+          review_id: expect.any(Number),
+          created_at: expect.any(String)
+        })
+      })
+    })
+  })
+  test("if given a valid review id that doesn't have any comments, respond with 404 and an appropriate message", () => {
+    return request(app)
+    .get('/api/reviews/1/comments')
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe("error: no comments found for id 1");
+    })
+  })
+  test("if given invalid id, respond with 400", () => {
+    return request(app)
+    .get('/api/reviews/a/comments')
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("error: invalid input");
+    })
+  })
+})
