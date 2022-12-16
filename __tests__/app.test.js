@@ -155,6 +155,28 @@ describe("GET /api/reviews/:review_id", () => {
   });
   test("responds with 404 upon being a number out of range", () => {
     return request(app)
+    .get("/api/reviews/1")
+    .expect(200);
+  })
+  test("responds with object with appropriate properties", () => {
+    return request(app)
+    .get('/api/reviews/1')
+    .then(({ body }) => {
+      expect(body.review).toMatchObject({
+        review_id: expect.any(Number),
+        title: expect.any(String),
+        designer: expect.any(String),
+        owner: expect.any(String),
+        review_img_url: expect.any(String),
+        review_body: expect.any(String),
+        category: expect.any(String),
+        created_at: expect.any(String),
+        votes: expect.any(Number)
+      })
+    })
+  })
+  test("responds with 404 upon being given a valid but non-existent id", () => {
+    return request(app)
       .get("/api/reviews/26")
       .expect(404)
       .then(({ body }) => {
