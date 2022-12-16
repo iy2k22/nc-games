@@ -129,13 +129,6 @@ describe("GET /api/reviews/:review_id", () => {
   test("returns status code 200", () => {
     return request(app).get("/api/reviews/1").expect(200);
   });
-  test("responds with an object", () => {
-    return request(app)
-      .get("/api/reviews/1")
-      .then(({ body }) => {
-        expect(typeof body.review).toBe("object");
-      });
-  });
   test("responds with object with appropriate properties", () => {
     return request(app)
       .get("/api/reviews/1")
@@ -153,11 +146,6 @@ describe("GET /api/reviews/:review_id", () => {
         });
       });
   });
-  test("responds with 404 upon being a number out of range", () => {
-    return request(app)
-    .get("/api/reviews/1")
-    .expect(200);
-  })
   test("responds with object with appropriate properties", () => {
     return request(app)
     .get('/api/reviews/1')
@@ -220,14 +208,20 @@ describe.only("GET /api/reviews/:review_id/comments", () => {
         });
       });
   });
-  test("if given a valid review id that doesn't have any comments, respond with 404 and an appropriate message", () => {
+  test("if given a valid review id that doesn't have any comments, respond with 200 and empty array", () => {
     return request(app)
-      .get("/api/reviews/1/comments")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("error: no comments found for id 1");
-      });
+    .get('/api/reviews/1/comments')
+    .expect(200)
+    .then(({ body }) => {
+      expect(body.comments).toEqual([]);
+    })
   });
+  test("if given an id that is valid but doesn't exist, return 404", () => {
+    return request(app).get('/api/reviews/384/comments').expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe("error: review id not found")
+    })
+  })
   test("if given invalid id, respond with 400", () => {
     return request(app)
       .get("/api/reviews/a/comments")
