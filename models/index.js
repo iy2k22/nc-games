@@ -12,7 +12,13 @@ const readReviews = () => {
   ORDER BY created_at desc`).then((result) => result.rows);
 };
 
+const readReviewById = (id) => {
+  return db.query(`SELECT * FROM reviews WHERE reviews.review_id = $1;`, [id])
+  .then((result) => result.rows[0] || Promise.reject({ status: 404, msg: "error: review id not found" }));
+}
+
 module.exports = {
   readCategories,
-  readReviews
+  readReviews,
+  readReviewById
 };
