@@ -120,13 +120,6 @@ describe("GET /api/reviews/:review_id", () => {
     .get("/api/reviews/1")
     .expect(200);
   })
-  test("responds with an object", () => {
-    return request(app)
-    .get("/api/reviews/1")
-    .then(({ body }) => {
-      expect(typeof body.review).toBe("object");
-    })
-  })
   test("responds with object with appropriate properties", () => {
     return request(app)
     .get('/api/reviews/1')
@@ -144,7 +137,7 @@ describe("GET /api/reviews/:review_id", () => {
       })
     })
   })
-  test("responds with 404 upon being a number out of range", () => {
+  test("responds with 404 upon being given a valid but non-existent id", () => {
     return request(app)
     .get('/api/reviews/26')
     .expect(404)
