@@ -56,9 +56,20 @@ describe("GET /api/reviews", () => {
     return request(app)
       .get("/api/reviews")
       .then((res) => {
-        const props = ["title", "owner", "category", "review_img_url", "designer", "review_id", "votes", "comment_count", "created_at"]
+        const props = [
+          "title",
+          "owner",
+          "category",
+          "review_img_url",
+          "designer",
+          "review_id",
+          "votes",
+          "comment_count",
+          "created_at",
+        ];
         for (let review of res.body.reviews) {
-            for (let prop of props) expect(review.hasOwnProperty(prop)).toBe(true);
+          for (let prop of props)
+            expect(review.hasOwnProperty(prop)).toBe(true);
         }
       });
   });
@@ -104,22 +115,37 @@ describe("GET /api/reviews", () => {
         votes: 5,
         designer: "Leslie Scott",
         comment_count: 3,
-      }
+      },
     ];
-      return request(app)
-      .get('/api/reviews')
+    return request(app)
+      .get("/api/reviews")
       .then((result) => {
         expect(result.body.reviews).toEqual(expect.arrayContaining(expected));
-      })
+      });
   });
 });
 
 describe("GET /api/reviews/:review_id", () => {
   test("returns status code 200", () => {
+    return request(app).get("/api/reviews/1").expect(200);
+  });
+  test("responds with object with appropriate properties", () => {
     return request(app)
-    .get("/api/reviews/1")
-    .expect(200);
-  })
+      .get("/api/reviews/1")
+      .then(({ body }) => {
+        expect(body.review).toMatchObject({
+          review_id: expect.any(Number),
+          title: expect.any(String),
+          designer: expect.any(String),
+          owner: expect.any(String),
+          review_img_url: expect.any(String),
+          review_body: expect.any(String),
+          category: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+        });
+      });
+  });
   test("responds with object with appropriate properties", () => {
     return request(app)
     .get('/api/reviews/1')
@@ -139,18 +165,69 @@ describe("GET /api/reviews/:review_id", () => {
   })
   test("responds with 404 upon being given a valid but non-existent id", () => {
     return request(app)
-    .get('/api/reviews/26')
-    .expect(404)
-    .then(({ body }) => {
-      expect(body.msg).toBe("error: review id not found");
-    })
-  })
+      .get("/api/reviews/26")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("error: review id not found");
+      });
+  });
   test("responds with 400 when given an invalid id", () => {
     return request(app)
-    .get('/api/reviews/a')
-    .expect(400)
+      .get("/api/reviews/a")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("error: invalid input");
+      });
+  });
+});
+
+describe.only("GET /api/reviews/:review_id/comments", () => {
+  test("returns status code 200", () => {
+    return request(app).get("/api/reviews/2/comments").expect(200);
+  });
+  test("responds with an object with a key of comments containing an array", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .then(({ body }) => {
+        expect(body.comments).toBeInstanceOf(Array);
+      });
+  });
+  test("array from response contains comments with appropriate properties", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .then(({ body }) => {
+        body.comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            votes: expect.any(Number),
+            author: expect.any(String),
+            review_id: expect.any(Number),
+            created_at: expect.any(String),
+          });
+        });
+      });
+  });
+  test("if given a valid review id that doesn't have any comments, respond with 200 and empty array", () => {
+    return request(app)
+    .get('/api/reviews/1/comments')
+    .expect(200)
     .then(({ body }) => {
-      expect(body.msg).toBe("error: invalid input");
+      expect(body.comments).toEqual([]);
+    })
+  });
+  test("if given an id that is valid but doesn't exist, return 404", () => {
+    return request(app).get('/api/reviews/384/comments').expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe("error: review id not found")
     })
   })
-})
+  test("if given invalid id, respond with 400", () => {
+    return request(app)
+      .get("/api/reviews/a/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("error: invalid input");
+      });
+  });
+});
