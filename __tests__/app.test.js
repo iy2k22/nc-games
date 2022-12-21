@@ -181,7 +181,7 @@ describe("GET /api/reviews/:review_id", () => {
   });
 });
 
-describe.only("GET /api/reviews/:review_id/comments", () => {
+describe("GET /api/reviews/:review_id/comments", () => {
   test("returns status code 200", () => {
     return request(app).get("/api/reviews/2/comments").expect(200);
   });
@@ -231,3 +231,56 @@ describe.only("GET /api/reviews/:review_id/comments", () => {
       });
   });
 });
+
+describe.only("POST /api/reviews/:review_id/comments", () => {
+  const comment = {
+    username: "mallionaire",
+    body: "b"
+  };
+  test("responds with status code 201", () => {
+    return request(app)
+    .post("/api/reviews/1/comments")
+    .send(comment)
+    .expect(201);
+  })
+  test("responds with an object, key of comment and the created object", () => {
+    return request(app)
+    .post("/api/reviews/1/comments")
+    .send(comment)
+    .then(({ body }) => {
+      expect(body.comment).toMatchObject({
+        body: comment.body,
+        review_id: 1,
+        author: comment.username,
+        votes: 0
+      });
+    })
+  })
+  test("responds with 404 upon being given a review id that doesn't exist", () => {
+    return request(app)
+    .post("/api/reviews/38/comments")
+    .send(comment)
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe("error: review id not found");
+    })
+  });
+  test("responds with 400 upon being given an invalid review id", () => {
+    return request(app)
+    .post("/api/reviews/a/comments")
+    .send(comment)
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("error: invalid input");
+    })
+  })
+  test("responds with 500 upon being given a username that doesn't exist", () => {
+    return request(app)
+    .post("/api/reviews/2/comments")
+    .send({
+      username: "a",
+      body: "b"
+    })
+    .expect(500);
+  })
+})

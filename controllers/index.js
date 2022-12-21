@@ -2,7 +2,8 @@ const {
     readCategories,
     readReviews,
     readReviewById,
-    readCommentsFromReview
+    readCommentsFromReview,
+    putComment
 } = require('../models');
 
 const getCategories = (req, res, next) => {
@@ -40,9 +41,16 @@ const getCommentsFromReview = (req, res, next) => {
     }).catch((err) => {next(err);})
 }
 
+const postComment = (req, res, next) => {
+    return putComment(req.params.review_id, req.body).then((comment) => {
+        res.status(201).send({ comment: comment });
+    }).catch((err) => {next(err);});
+}
+
 module.exports = {
     getCategories,
     getReviews,
     getReviewById,
-    getCommentsFromReview
+    getCommentsFromReview,
+    postComment
 };

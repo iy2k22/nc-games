@@ -4,7 +4,8 @@ const {
     getCategories,
     getReviews,
     getReviewById,
-    getCommentsFromReview
+    getCommentsFromReview,
+    postComment
 } = require('./controllers');
 const {
     handleInvalidEndpoints,
@@ -19,6 +20,7 @@ app.get('/api/categories', getCategories);
 app.get('/api/reviews', getReviews)
 app.get('/api/reviews/:review_id', getReviewById);
 app.get('/api/reviews/:review_id/comments', getCommentsFromReview);
+app.post('/api/reviews/:review_id/comments', postComment);
 
 app.all('*', handleInvalidEndpoints);
 app.use(handleCustomErrors);
