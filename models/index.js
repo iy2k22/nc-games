@@ -53,10 +53,7 @@ const patchVotes = (id, incValue) => {
 }
 
 const readUsers = () => {
-  return db.query(`SELECT * FROM users;`).then(({ rows }) => {
-    console.log('a');
-    return rows;
-  });
+  return db.query(`SELECT * FROM users;`).then(({ rows }) => rows);
 }
 
 module.exports = {
