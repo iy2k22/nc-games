@@ -5,6 +5,7 @@ const {
   readCommentsFromReview,
   putComment,
   patchVotes,
+  readUsers
 } = require("../models");
 
 const getCategories = (req, res, next) => {
@@ -74,6 +75,14 @@ const patchComment = (req, res, next) => {
   } else next({ status: 400, msg: "Bad Request" });
 };
 
+const getUsers = (req, res, next) => {
+  return readUsers().then((users) => {
+    res.status(200).send({ users: users });
+  }).catch((err) => {
+    next(err);
+  })
+}
+
 module.exports = {
   getCategories,
   getReviews,
@@ -81,4 +90,5 @@ module.exports = {
   getCommentsFromReview,
   postComment,
   patchComment,
+  getUsers
 };

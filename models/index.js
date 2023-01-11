@@ -52,11 +52,19 @@ const patchVotes = (id, incValue) => {
   })
 }
 
+const readUsers = () => {
+  return db.query(`SELECT * FROM users;`).then(({ rows }) => {
+    console.log('a');
+    return rows;
+  });
+}
+
 module.exports = {
   readCategories,
   readReviews,
   readReviewById,
   readCommentsFromReview,
   putComment,
-  patchVotes
+  patchVotes,
+  readUsers
 };
