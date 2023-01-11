@@ -43,10 +43,20 @@ const putComment = (id, comment) => {
   })
 }
 
+const patchVotes = (id, incValue) => {
+  return checkReviewExists(id).then(() => {
+    return db.query(`UPDATE reviews
+    SET votes = votes + $2
+    WHERE review_id = $1`, [id, incValue])
+    .then(() => readReviewById(id));
+  })
+}
+
 module.exports = {
   readCategories,
   readReviews,
   readReviewById,
   readCommentsFromReview,
-  putComment
+  putComment,
+  patchVotes
 };

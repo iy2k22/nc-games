@@ -4,6 +4,7 @@ const {
   readReviewById,
   readCommentsFromReview,
   putComment,
+  patchVotes,
 } = require("../models");
 
 const getCategories = (req, res, next) => {
@@ -61,10 +62,23 @@ const postComment = (req, res, next) => {
     });
 };
 
+const patchComment = (req, res, next) => {
+  if (req.body.inc_votes) {
+    return patchVotes(req.params.review_id, req.body.inc_votes)
+      .then((review) => {
+        res.status(200).send({ review: review });
+      })
+      .catch((err) => {
+        next(err);
+      });
+  } else next({ status: 400, msg: "Bad Request" });
+};
+
 module.exports = {
   getCategories,
   getReviews,
   getReviewById,
   getCommentsFromReview,
   postComment,
+  patchComment,
 };

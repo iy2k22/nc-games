@@ -232,7 +232,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
   });
 });
 
-describe.only("POST /api/reviews/:review_id/comments", () => {
+describe("POST /api/reviews/:review_id/comments", () => {
   const comment = {
     username: "mallionaire",
     body: "b"
@@ -282,5 +282,34 @@ describe.only("POST /api/reviews/:review_id/comments", () => {
       body: "b"
     })
     .expect(500);
+  })
+})
+
+describe("patchComments", () => {
+  test("responds with status code 200", () => {
+    return request(app)
+    .patch("/api/reviews/6")
+    .send({ inc_votes: 20 })
+    .expect(200);
+  })
+  test("responds with updated comment", () => {
+    return request(app)
+    .patch("/api/reviews/2")
+    .send({ inc_votes: 2 })
+    .then(({ body }) => {
+      expect(body.review).toMatchObject({
+        review_id: 2,
+        votes: 7
+      })
+    })
+  })
+  test("responds with 400 when given invalid request", () => {
+    return request(app)
+    .patch("/api/reviews/1")
+    .send({ a: "b" })
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Bad Request");
+    })
   })
 })
